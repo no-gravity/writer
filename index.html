@@ -1,0 +1,132 @@
+<!doctype html>
+
+<html>
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Writer</title>
+</head>
+
+<style>
+
+    *, *:before, *:after {
+        box-sizing: border-box;
+    }
+
+    html {
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        background: #d0d0d0;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        font-family: sans-serif;
+    }
+
+    textarea {
+        display: block;
+        width: 600px;
+        height: 70vh;
+        background: #e8e8e8;
+        border: 0;
+        padding: 40px;
+        outline: none;
+        -fx-display-caret: false ;
+        font-size: 16px;
+    }
+
+    #loadSave {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #d8d8d8;
+        opacity: 0;
+    }
+
+    #loadSave:hover {
+        opacity: 1;
+    }
+
+    #loadSave div {
+        display: inline-block;
+        cursor: pointer;
+        padding: 20px;
+        background: #e0e0e0;
+        opacity: 0.25;
+    }
+
+    #loadSave div:hover {
+        opacity: 1;
+    }
+
+</style>
+
+<body>
+
+<div id=loadSave>
+    <div id=load>Load</div>
+    <div id=save>Save</div>
+</div>
+
+<script type=module>
+
+    import * as file from './file.js';
+
+    function save() {
+        const text = document.querySelector('#theText').value;
+        file.save(text);
+    }
+
+    async function load() {
+        const text = await file.load();
+        document.querySelector('#theText').value = text;
+        document.title = file.filename;
+    }
+
+    document.querySelector('#load')
+            .addEventListener('click', load);
+    document.querySelector('#save')
+            .addEventListener('click', save);
+
+</script>
+
+<textarea id=theText>
+</textarea>
+
+<script>
+
+    initialText=`
+        Simple distraction free writing
+
+        Click in this text area to start writing.
+
+        Move the mouse to the upper left corner of the screen to activate the load/save buttons.
+    `;
+
+    initialText = initialText.replace(/(^ +)/gm, '').trim();
+
+    document.querySelector('#theText').value=initialText;
+
+    function initialClear() {
+        document.querySelector('#theText').value='';
+        document.querySelector('#theText')
+                .removeEventListener('mousedown', initialClear);
+    }
+
+    document.querySelector('#theText')
+            .addEventListener('mousedown', initialClear);
+
+    window.onbeforeunload = function(){
+        return 'Are you sure you want to leave?';
+    };
+
+</script>
+
+</body>
+</html>
