@@ -74,34 +74,41 @@
     <div id=save>Save</div>
 </div>
 
+<textarea id=theText>
+</textarea>
+
 <script type=module>
 
     import * as file from './file.js';
 
+    const dcs = document.querySelector.bind(document);
+
+    const tt = dcs('#theText');
+
     function save() {
-        const text = document.querySelector('#theText').value;
+        const text = dcs('#theText').value;
         file.save(text);
     }
 
     async function load() {
         const text = await file.load();
-        document.querySelector('#theText').value = text;
+        dcs('#theText').value = text;
         document.title = file.filename;
     }
 
-    document.querySelector('#load')
-            .addEventListener('click', load);
-    document.querySelector('#save')
-            .addEventListener('click', save);
+    function initialClear() {
+        tt.value='';
+        tt.removeEventListener('mousedown', initialClear);
+    }
 
-</script>
+    // -----------------------------------------------------
+    // Main
+    // -----------------------------------------------------
 
-<textarea id=theText>
-</textarea>
+    dcs('#load').addEventListener('click', load);
+    dcs('#save').addEventListener('click', save);
 
-<script>
-
-    initialText=`
+    let initialText = `
         Simple distraction free writing
 
         Click in this text area to start writing.
@@ -111,15 +118,9 @@
 
     initialText = initialText.replace(/(^ +)/gm, '').trim();
 
-    document.querySelector('#theText').value=initialText;
+    dcs('#theText').value=initialText;
 
-    function initialClear() {
-        document.querySelector('#theText').value='';
-        document.querySelector('#theText')
-                .removeEventListener('mousedown', initialClear);
-    }
-
-    document.querySelector('#theText')
+    dcs('#theText')
             .addEventListener('mousedown', initialClear);
 
     window.onbeforeunload = function(){
