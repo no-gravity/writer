@@ -91,6 +91,7 @@
     }
 
     async function load() {
+        tt.removeEventListener('mousedown', initialClear);
         const text = await file.load();
         dcs('#theText').value = text;
         document.title = file.filename;
